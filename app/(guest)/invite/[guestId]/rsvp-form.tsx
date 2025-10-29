@@ -56,7 +56,7 @@ export function RsvpForm({
     action,
     initialState,
   );
-  const lastToastRef = useRef<number | undefined>();
+  const lastToastRef = useRef<number | undefined>(undefined);
   const { toastConfirmed, toastDeclined, toastGeneric, toastError } = labels;
 
   useEffect(() => {
