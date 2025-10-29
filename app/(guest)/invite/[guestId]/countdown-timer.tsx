@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-function getParts(targetDate: Date) {
+function getParts(targetDate: Date): [number, number, number, number] {
   const now = new Date();
   const diff = targetDate.getTime() - now.getTime();
   const safeDiff = Math.max(diff, 0);
@@ -13,7 +13,7 @@ function getParts(targetDate: Date) {
   const minutes = Math.floor((seconds % (60 * 60)) / 60);
   const secs = seconds % 60;
 
-  return [days, hours, minutes, secs] as const;
+  return [days, hours, minutes, secs];
 }
 
 interface CountdownTimerProps {
