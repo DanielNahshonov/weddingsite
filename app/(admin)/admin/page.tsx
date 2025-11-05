@@ -1,4 +1,5 @@
 import { MongoServerError } from "mongodb";
+import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
@@ -16,8 +17,7 @@ import {
   updateGuest,
   type GuestLanguage,
 } from "@/lib/guest-repository";
-import { CopyLinkButton } from "./copy-link-button";
-import { SendWhatsappButton } from "./send-whatsapp-button";
+import { GuestCard } from "./guest-card";
 
 export const dynamic = "force-dynamic";
 
@@ -36,16 +36,6 @@ const FILTER_TITLES: Record<FilterId, string> = {
   declined: "Не придут",
   pending: "Ждём ответ",
 };
-
-function formatDate(date: Date | null, locale: string = "ru-RU") {
-  if (!date) {
-    return "—";
-  }
-  return date.toLocaleString(locale, {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
-}
 
 async function loginAction(formData: FormData) {
   "use server";
@@ -441,14 +431,22 @@ export default async function AdminPage({
               Ведём учёт гостей, отправляем ссылки и отслеживаем ответы.
             </p>
           </div>
-          <form action={logoutAction}>
-            <button
-              type="submit"
+          <div className="flex items-center gap-3">
+            <Link
+              href="/admin/seating"
               className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-600 transition hover:border-zinc-500 hover:text-zinc-900"
             >
-              Выйти
-            </button>
-          </form>
+              План рассадки
+            </Link>
+            <form action={logoutAction}>
+              <button
+                type="submit"
+                className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-600 transition hover:border-zinc-500 hover:text-zinc-900"
+              >
+                Выйти
+              </button>
+            </form>
+          </div>
         </div>
       </header>
       <main className="mx-auto mt-10 flex max-w-6xl flex-col gap-10 px-6">
@@ -464,14 +462,14 @@ export default async function AdminPage({
           </div>
         )}
 
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
           {statsCards.map((card) => {
             const isActive = card.id === filterParam;
             return (
               <a
                 key={card.id}
                 href={buildFilterHref(card.id)}
-                className={`group flex flex-col gap-2 rounded-3xl border px-5 py-4 transition ${
+                className={`group flex flex-col gap-1.5 rounded-3xl border px-4 py-3 transition sm:gap-2 sm:px-5 sm:py-4 ${
                   isActive
                     ? "border-zinc-900 bg-zinc-900 text-white shadow-lg"
                     : "border-zinc-200 bg-white text-zinc-900 hover:border-zinc-400 hover:shadow-sm"
@@ -480,7 +478,9 @@ export default async function AdminPage({
                 <span className="text-sm font-medium uppercase tracking-[0.2em]">
                   {FILTER_TITLES[card.id]}
                 </span>
-                <span className="text-3xl font-semibold">{card.value}</span>
+                <span className="text-2xl font-semibold sm:text-3xl">
+                  {card.value}
+                </span>
                 {card.subtitle && (
                   <span
                     className={`text-xs ${
@@ -617,185 +617,23 @@ export default async function AdminPage({
             )}
 
             {filteredGuests.map((guest) => (
-              <article
+              <GuestCard
                 key={guest.id}
-                className="space-y-5 rounded-3xl border border-зinc-200 bg-white p-6 shadow-sm"
-              >
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-зinc-900">
-                      {guest.firstName} {guest.lastName}
-                    </h3>
-                    <p className="text-sm text-зinc-500">{guest.phone}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <SendWhatsappButton
-                      path={`/invite/${guest.id}`}
-                      guestName={guest.firstName}
-                      language={guest.language}
-                      phone={guest.phone}
-                      markInviteSent={markInviteSentFromWhatsapp.bind(null, guest.id)}
-                    />
-                    <CopyLinkButton path={`/invite/${guest.id}`} />
-                    <form action={markInviteSentAction}>
-                      <input
-                        type="hidden"
-                        name="guestId"
-                        value={guest.id}
-                      />
-                      <button
-                        type="submit"
-                        className="rounded-full border border-зinc-300 px-3 py-1 text-xs font-medium text-зinc-600 transition hover:border-зinc-500 hover:text-зinc-900"
-                      >
-                        Отметить отправленным
-                      </button>
-                    </form>
-                  </div>
-                </div>
-
-                <dl className="grid gap-4 sm:grid-cols-4">
-                  <div>
-                    <dt className="text-xs uppercase tracking-wide text-зinc-500">
-                      Статус ответа
-                    </dt>
-                    <dd className="mt-1 text-sm font-medium text-зinc-800">
-                      {guest.attending === true
-                        ? "Придёт"
-                        : guest.attending === false
-                          ? "Не придёт"
-                          : "Ждём ответ"}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-xs uppercase tracking-wide text-зinc-500">
-                      Количество гостей
-                    </dt>
-                    <dd className="mt-1 text-sm font-medium text-зinc-800">
-                      {guest.partySize}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-xs uppercase tracking-wide text-зinc-500">
-                      Язык приглашения
-                    </dt>
-                    <dd className="mt-1 text-sm font-medium text-зinc-800">
-                      {guest.language === "ru" ? "Русский" : "עברית"}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-xs uppercase tracking-wide text-зinc-500">
-                      Приглашение отправлено
-                    </dt>
-                    <dd className="mt-1 text-sm font-medium text-зinc-800">
-                      {formatDate(guest.lastInviteSentAt)}
-                    </dd>
-                  </div>
-                </dl>
-
-                <form
-                  action={updateGuestAction}
-                  className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6"
-                >
-                  <input
-                    type="hidden"
-                    name="guestId"
-                    value={guest.id}
-                  />
-                  <div className="lg:col-span-1">
-                    <label className="block text-xs font-medium uppercase tracking-wide text-зinc-500">
-                      Имя
-                    </label>
-                    <input
-                      name="firstName"
-                      defaultValue={guest.firstName}
-                      className="mt-2 w-full rounded-xl border border-зinc-300 px-3 py-2 text-sm outline-none transition focus:border-зinc-900 focus:ring-2 focus:ring-зinc-900/10"
-                    />
-                  </div>
-                  <div className="lg:col-span-1">
-                    <label className="block text-xs font-medium uppercase tracking-wide text-зinc-500">
-                      Фамилия
-                    </label>
-                    <input
-                      name="lastName"
-                      defaultValue={guest.lastName}
-                      className="mt-2 w-full rounded-xl border border-зinc-300 px-3 py-2 text-sm outline-none transition focus:border-зinc-900 focus:ring-2 focus:ring-зinc-900/10"
-                    />
-                  </div>
-                  <div className="lg:col-span-1">
-                    <label className="block text-xs font-medium uppercase tracking-wide text-зinc-500">
-                      Телефон
-                    </label>
-                    <input
-                      name="phone"
-                      defaultValue={guest.phone}
-                      className="mt-2 w-full rounded-xl border border-зinc-300 px-3 py-2 text-sm outline-none transition focus:border-зinc-900 focus:ring-2 focus:ring-зinc-900/10"
-                    />
-                  </div>
-                  <div className="lg:col-span-1">
-                    <label className="block text-xs font-medium uppercase tracking-wide text-зinc-500">
-                      Количество гостей
-                    </label>
-                    <input
-                      name="partySize"
-                      type="number"
-                      min={0}
-                      defaultValue={guest.partySize}
-                      className="mt-2 w-full rounded-xl border border-зinc-300 px-3 py-2 text-sm outline-none transition focus:border-зinc-900 focus:ring-2 focus:ring-зinc-900/10"
-                    />
-                  </div>
-                  <div className="lg:col-span-1">
-                    <label className="block text-xs font-medium uppercase tracking-wide text-зinc-500">
-                      Статус
-                    </label>
-                    <select
-                      name="attending"
-                      defaultValue={
-                        guest.attending === true
-                          ? "yes"
-                          : guest.attending === false
-                            ? "no"
-                            : "pending"
-                      }
-                      className="mt-2 w-full rounded-xl border border-зinc-300 px-3 py-2 text-sm outline-none transition focus:border-зinc-900 focus:ring-2 focus:ring-зinc-900/10"
-                    >
-                      <option value="pending">Ждём ответ</option>
-                      <option value="yes">Придёт</option>
-                      <option value="no">Не придёт</option>
-                    </select>
-                  </div>
-                  <div className="lg:col-span-1">
-                    <label className="block text-xs font-medium uppercase tracking-wide text-зinc-500">
-                      Язык
-                    </label>
-                    <select
-                      name="language"
-                      defaultValue={guest.language}
-                      className="mt-2 w-full rounded-xl border border-зinc-300 px-3 py-2 text-sm outline-none transition focus:border-зinc-900 focus:ring-2 focus:ring-зinc-900/10"
-                    >
-                      {LANGUAGE_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="lg:col-span-6 flex flex-wrap items-center justify-between gap-3 pt-3">
-                    <button
-                      type="submit"
-                      className="rounded-full bg-зinc-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-зinc-800"
-                    >
-                      Сохранить изменения
-                    </button>
-                    <button
-                      type="submit"
-                      formAction={deleteGuestAction}
-                      className="rounded-full border border-red-200 px-4 py-2 text-xs font-semibold text-red-600 transition hover:border-red-300 hover:text-red-700"
-                    >
-                      Удалить гостя
-                    </button>
-                  </div>
-                </form>
-              </article>
+                guest={{
+                  id: guest.id,
+                  firstName: guest.firstName,
+                  lastName: guest.lastName,
+                  phone: guest.phone,
+                  partySize: guest.partySize,
+                  attending: guest.attending,
+                  language: guest.language,
+                }}
+                languageOptions={LANGUAGE_OPTIONS}
+                updateGuestAction={updateGuestAction}
+                deleteGuestAction={deleteGuestAction}
+                markInviteSentAction={markInviteSentAction}
+                markInviteSentFromWhatsapp={markInviteSentFromWhatsapp.bind(null, guest.id)}
+              />
             ))}
           </div>
         </section>
