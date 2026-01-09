@@ -24,3 +24,40 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
+
+@keyframes animate-bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate__bounceIn {
+  animation: animate-bounce-in 0.9s ease both;
+}
+
+@keyframes pulse-play {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(244, 244, 245, 0.25);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 10px rgba(244, 244, 245, 0);
+  }
+}
+
+.pulse-play {
+  animation: pulse-play 1.8s ease-in-out infinite;
+}

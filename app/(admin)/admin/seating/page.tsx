@@ -169,9 +169,10 @@ async function updateTableAction(formData: FormData) {
     redirect("/admin/seating?error=unknown-table");
   }
 
+  const labelValue = formData.get("label");
   const label =
-    typeof formData.get("label") === "string" && formData.get("label")!.trim()
-      ? (formData.get("label") as string).trim()
+    typeof labelValue === "string" && labelValue.trim()
+      ? labelValue.trim()
       : target.label;
   const type = sanitizeTableType(formData.get("type"));
   const capacity = parseNumber(formData.get("capacity"), target.capacity, {

@@ -1,24 +1,38 @@
 import Image from "next/image";
 import type { Metadata } from "next";
+import { Great_Vibes } from "next/font/google";
 import { notFound } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { findGuestById, updateGuest } from "@/lib/guest-repository";
 import { CountdownTimer } from "./countdown-timer";
 import { RsvpForm } from "./rsvp-form";
 import { InviteToaster } from "./toaster-client";
+import { MusicToggle } from "./music-toggle";
 import type { RsvpActionPayload } from "./types";
 
-const COUPLE_NAMES = "Daniel & Irina";
-const WEDDING_DATE_ISO = "2026-05-18T15:30:00Z";
+const COUPLE_NAMES = "Daniel & Iryna";
+const WEDDING_DATE_ISO = "2026-03-30T16:30:00Z";
+const VENUE_NAME_EN = "SAY EVENTS";
+const VENUE_NAME_HE = "סיי ארועים";
+const VENUE_ADDRESS = "Moshe Sharett St 19, Rishon LeZion";
+const VENUE_SITE_URL = "https://say-events.co.il/";
+const heroScript = Great_Vibes({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 const translations = {
   ru: {
-    heroTagline: "Мы женимся",
     heroHeadline: COUPLE_NAMES,
     heroSubheading: (guestName: string) =>
-      `${guestName}, мы будем счастливы видеть тебя на нашем празднике любви.`,
-    heroDateLine: "18 мая 2026 • 18:30",
+      `${guestName}, с радостью приглашаем вас на важное событие - нашу свадьбу!`,
+    heroDateLine: "30 марта 2026 • 19:30",
     heroScroll: "Листай вниз, чтобы узнать подробности",
+    introLineOne: "Мы будем счастливы разделить с вами",
+    introLineTwo: "вечер любви, радости",
+    introLineThree: "и начала новой главы.",
+    introGuestLine: (guestName: string) =>
+      `Будем рады видеть вас, ${guestName}, в этот важный день нашей жизни.`,
     highlightsTitle: "Что тебя ждёт",
     highlightsIntro:
       "Мы готовим день, полный эмоций. Праздник будет тёплым, атмосферным и очень личным.",
@@ -63,6 +77,13 @@ const translations = {
     timelineTitle: "Расписание вечера",
     timelineIntro:
       "Вот тайминг нашего праздника, чтобы ты точно знал, когда быть с нами.",
+    locationTitle: "Где проходит праздник",
+    locationIntro: "Мы будем очень ждать тебя в нашем зале. Ниже — адрес и карты.",
+    locationAddressLabel: "Адрес",
+    locationSiteLabel: "Сайт зала",
+    locationOpenWaze: "Открыть в Waze",
+    locationOpenGoogle: "Открыть в Google Maps",
+    locationOpenApple: "Открыть в Apple Maps",
     timelineSlots: [
       {
         time: "18:30",
@@ -94,12 +115,16 @@ const translations = {
     toastError: "Не получилось сохранить ответ. Попробуй ещё раз.",
   },
   he: {
-    heroTagline: "אנחנו מתחתנים",
     heroHeadline: COUPLE_NAMES,
     heroSubheading: (guestName: string) =>
       `${guestName}, נשמח לחגוג איתך את האהבה שלנו.`,
-    heroDateLine: "18.05.2026 • 18:30",
+    heroDateLine: "30.03.2026 • 19:30",
     heroScroll: "גלול מטה לכל המידע",
+    introLineOne: "נשמח לחלוק איתכם",
+    introLineTwo: "ערב של אהבה ושמחה",
+    introLineThree: "ותחילתה של פרק חדש.",
+    introGuestLine: (guestName: string) =>
+      `נשמח לראות אותך, ${guestName}, ביום החשוב הזה בחיינו.`,
     highlightsTitle: "מה מחכה לך",
     highlightsIntro:
       "אנחנו מתכננים ערב מלא אהבה ורגעים מיוחדים. הכל יהיה אישי, חם ומרגש.",
@@ -142,6 +167,13 @@ const translations = {
     countdownComplete: "היום זה קורה!",
     timelineTitle: "לוח זמנים לערב שלנו",
     timelineIntro: "כך ייראה הערב — כדי שתדע/י בדיוק מתי להיות איתנו.",
+    locationTitle: "איפה חוגגים",
+    locationIntro: "נשמח לראות אותך באולם שלנו. כאן כל הפרטים והקישורים.",
+    locationAddressLabel: "כתובת",
+    locationSiteLabel: "אתר האולם",
+    locationOpenWaze: "פתיחה ב-Waze",
+    locationOpenGoogle: "פתיחה ב-Google Maps",
+    locationOpenApple: "פתיחה ב-Apple Maps",
     timelineSlots: [
       {
         time: "18:30",
@@ -175,11 +207,14 @@ const translations = {
 } satisfies Record<
   string,
   {
-    heroTagline: string;
     heroHeadline: string;
     heroSubheading: (guestName: string) => string;
     heroDateLine: string;
     heroScroll: string;
+    introLineOne: string;
+    introLineTwo: string;
+    introLineThree: string;
+    introGuestLine: (guestName: string) => string;
     highlightsTitle: string;
     highlightsIntro: string;
     scheduleHighlights: Array<{
@@ -197,6 +232,13 @@ const translations = {
     countdownComplete: string;
     timelineTitle: string;
     timelineIntro: string;
+    locationTitle: string;
+    locationIntro: string;
+    locationAddressLabel: string;
+    locationSiteLabel: string;
+    locationOpenWaze: string;
+    locationOpenGoogle: string;
+    locationOpenApple: string;
     timelineSlots: Array<{
       time: string;
       title: string;
@@ -331,6 +373,11 @@ export default async function GuestInvitePage({
   const direction = guest.language === "he" ? "rtl" : "ltr";
   const alignment = guest.language === "he" ? "text-right" : "text-left";
   const initialCountdown = calculateInitialCountdown(WEDDING_DATE_ISO);
+  const locationQuery = encodeURIComponent(VENUE_ADDRESS);
+  const wazeUrl = `https://waze.com/ul?q=${locationQuery}&navigate=yes`;
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${locationQuery}`;
+  const appleMapsUrl = `https://maps.apple.com/?q=${locationQuery}`;
+  const venueDisplay = guest.language === "he" ? VENUE_NAME_HE : VENUE_NAME_EN;
 
   return (
     <div
@@ -347,31 +394,41 @@ export default async function GuestInvitePage({
           className="object-cover"
         />
         <div className="absolute inset-0 bg-zinc-900/65 backdrop-blur-[2px]" />
-        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-6 px-6 text-center">
-          <p className="text-sm uppercase tracking-[0.3em] text-zinc-300">
-            {copy.heroTagline}
-          </p>
-          <h1 className="font-serif text-5xl font-light tracking-wide sm:text-6xl">
-            {copy.heroHeadline}
-          </h1>
-          <p className="max-w-2xl text-lg text-zinc-200">
-            {copy.heroSubheading(guest.firstName)}
-          </p>
-          <div className="rounded-full border border-zinc-400 px-5 py-2 text-sm uppercase tracking-[0.4em] text-zinc-200">
-            {guest.firstName} {guest.lastName}
+        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-5 px-6 text-center">
+          <div
+            className={`${heroScript.className} text-7xl leading-tight text-zinc-100 sm:text-8xl`}
+          >
+            <span className="block">Daniel</span>
+            <span className="block">&amp;</span>
+            <span className="block">Iryna</span>
           </div>
-          <p className="text-xs font-medium uppercase tracking-[0.4em] text-zinc-300">
-            {copy.heroDateLine}
+          <p className={`${heroScript.className} text-3xl text-zinc-200 sm:text-4xl`}>
+            March 30 2026
           </p>
-          <div className="mt-8 flex items-center gap-3 text-xs uppercase tracking-[0.4em] text-zinc-200">
-            <span className="inline-block h-px w-8 bg-zinc-200" />
-            {copy.heroScroll}
-            <span className="inline-block h-px w-8 bg-zinc-200" />
-          </div>
+          <p className={`${heroScript.className} text-4xl text-zinc-100 sm:text-5xl`}>
+            Wedding Day
+          </p>
+          <MusicToggle />
+        </div>
+        <div className="absolute bottom-8 left-0 right-0 flex justify-center">
+          <p className="text-xs uppercase tracking-[0.35em] text-zinc-300">
+            Swipe down to see more
+          </p>
         </div>
       </header>
 
       <main>
+        <section className="mx-auto max-w-3xl px-6 py-14 text-center sm:py-18">
+          <div className={`space-y-3 text-lg text-zinc-700 ${alignment}`}>
+            <p>{copy.introLineOne}</p>
+            <p>{copy.introLineTwo}</p>
+            <p>{copy.introLineThree}</p>
+          </div>
+          <p className={`mt-6 text-base text-zinc-600 ${alignment}`}>
+            {copy.introGuestLine(guest.firstName)}
+          </p>
+        </section>
+
         <section className="mx-auto max-w-4xl px-6 py-16 text-center sm:py-20">
           <h2 className="font-serif text-3xl font-light tracking-wide text-zinc-900 sm:text-4xl">
             {copy.countdownTitle}
@@ -415,6 +472,96 @@ export default async function GuestInvitePage({
                 </p>
               </article>
             ))}
+          </div>
+        </section>
+
+        <section className="border-t border-zinc-200 bg-white">
+          <div className="mx-auto max-w-5xl px-6 py-20 sm:py-24">
+            <div className="mx-auto max-w-3xl text-center">
+              <h2 className="font-serif text-3xl font-light text-zinc-900 sm:text-4xl">
+                {copy.locationTitle}
+              </h2>
+              <p className="mt-4 text-base text-zinc-600">
+                {copy.locationIntro}
+              </p>
+            </div>
+            <div className="mt-12 rounded-3xl border border-zinc-200 bg-zinc-50 p-8 shadow-sm">
+              <div className={`text-center ${alignment}`}>
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-zinc-400">
+                  {copy.locationAddressLabel}
+                </p>
+                <h3 className="mt-3 font-serif text-2xl text-zinc-900 sm:text-3xl">
+                  {venueDisplay}
+                </h3>
+                <p className="mt-3 text-sm text-zinc-600">{VENUE_ADDRESS}</p>
+                <a
+                  href={VENUE_SITE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-4 inline-flex items-center justify-center rounded-full border border-zinc-300 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-900"
+                >
+                  {copy.locationSiteLabel}
+                </a>
+              </div>
+              <div className="mt-8 grid grid-cols-3 gap-2">
+                <a
+                  href={wazeUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={copy.locationOpenWaze}
+                  className="flex h-12 items-center justify-center rounded-2xl border border-zinc-200 bg-white text-zinc-700 shadow-sm transition hover:border-zinc-300 hover:text-zinc-900 sm:h-14"
+                >
+                  <Image
+                    src="/waze.svg"
+                    alt="Waze"
+                    width={34}
+                    height={34}
+                    className="h-8 w-8"
+                  />
+                </a>
+                <a
+                  href={googleMapsUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={copy.locationOpenGoogle}
+                  className="flex h-12 items-center justify-center rounded-2xl border border-zinc-200 bg-white text-zinc-700 shadow-sm transition hover:border-zinc-300 hover:text-zinc-900 sm:h-14"
+                >
+                  <Image
+                    src="/google_maps.svg"
+                    alt="Google Maps"
+                    width={34}
+                    height={34}
+                    className="h-8 w-8"
+                  />
+                </a>
+                <a
+                  href={appleMapsUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={copy.locationOpenApple}
+                  className="flex h-12 items-center justify-center rounded-2xl border border-zinc-200 bg-white text-zinc-700 shadow-sm transition hover:border-zinc-300 hover:text-zinc-900 sm:h-14"
+                >
+                  <Image
+                    src="/AppleMaps.svg"
+                    alt="Apple Maps"
+                    width={38}
+                    height={38}
+                    className="h-9 w-9"
+                  />
+                </a>
+              </div>
+              <div className="mt-8 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
+                <div className="relative h-0 w-full pb-[60%] sm:pb-[45%]">
+                  <iframe
+                    title="Venue map"
+                    src={`https://www.google.com/maps?q=${locationQuery}&output=embed`}
+                    className="absolute inset-0 h-full w-full border-0 grayscale"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 

@@ -100,7 +100,7 @@ export async function upsertSeatingPlan(input: SeatingPlanInput) {
     },
   );
 
-  return result.value as SeatingPlanDocument | null;
+  return (result ?? null) as SeatingPlanDocument | null;
 }
 
 export async function updateSeatingPlan(slug: string, update: SeatingPlanUpdate) {
@@ -129,7 +129,7 @@ export async function updateSeatingPlan(slug: string, update: SeatingPlanUpdate)
     { returnDocument: "after" },
   );
 
-  return result.value as SeatingPlanDocument | null;
+  return (result ?? null) as SeatingPlanDocument | null;
 }
 
 export async function removeTable(slug: string, tableId: string) {
