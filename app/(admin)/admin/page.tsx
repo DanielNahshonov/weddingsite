@@ -17,7 +17,7 @@ import {
   updateGuest,
   type GuestLanguage,
 } from "@/lib/guest-repository";
-import { GuestCard } from "./guest-card";
+import { GuestList } from "./guest-list";
 
 export const dynamic = "force-dynamic";
 
@@ -597,46 +597,15 @@ export default async function AdminPage({
           </form>
         </section>
 
-        <section className="space-y-6">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-zinc-900">
-                {FILTER_TITLES[filterParam]} — {filteredGuests.length}
-              </h2>
-              <p className="text-xs text-zinc-500">
-                Изменения сохраняются автоматически.
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            {filteredGuests.length === 0 && (
-              <div className="rounded-3xl border border-dashed border-зinc-300 bg-white px-6 py-12 text-center text-sm text-зinc-500">
-                Пока нет гостей в этой категории.
-              </div>
-            )}
-
-            {filteredGuests.map((guest) => (
-              <GuestCard
-                key={guest.id}
-                guest={{
-                  id: guest.id,
-                  firstName: guest.firstName,
-                  lastName: guest.lastName,
-                  phone: guest.phone,
-                  partySize: guest.partySize,
-                  attending: guest.attending,
-                  language: guest.language,
-                }}
-                languageOptions={LANGUAGE_OPTIONS}
-                updateGuestAction={updateGuestAction}
-                deleteGuestAction={deleteGuestAction}
-                markInviteSentAction={markInviteSentAction}
-                markInviteSentFromWhatsapp={markInviteSentFromWhatsapp.bind(null, guest.id)}
-              />
-            ))}
-          </div>
-        </section>
+        <GuestList
+          title={FILTER_TITLES[filterParam]}
+          guests={filteredGuests}
+          languageOptions={LANGUAGE_OPTIONS}
+          updateGuestAction={updateGuestAction}
+          deleteGuestAction={deleteGuestAction}
+          markInviteSentAction={markInviteSentAction}
+          markInviteSentFromWhatsapp={markInviteSentFromWhatsapp}
+        />
       </main>
     </div>
   );
