@@ -7,7 +7,7 @@ import type { GuestLanguage } from "@/lib/guest-repository";
 const MESSAGES: Record<GuestLanguage, (args: { firstName: string; url: string }) => string> =
   {
     ru: ({ firstName, url }) =>
-      `Привет, ${firstName}! Приглашаем тебя на нашу свадьбу. Пожалуйста, подтверди участие по ссылке: ${url}`,
+      `Привет, ${firstName}! Приглашаем вас на нашу свадьбу. Сообщите,пожалуйста, сможете ли вы присоедениться ${url}`,
     he: ({ firstName, url }) =>
       `היי ${firstName}! אנחנו שמחים להזמין אותך לחתונה שלנו. אשר/י הגעה בקישור: ${url}`,
   };

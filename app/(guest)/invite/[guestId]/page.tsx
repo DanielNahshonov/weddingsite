@@ -115,14 +115,14 @@ const translations = {
       },
     ],
     rsvpTitle: "Подтверди участие",
-    rsvpSubtitle: "Расскажи, сможете ли ты прийти и сколько вас будет.",
+    rsvpSubtitle: "Сообщите, пожалуйста, сможете ли вы присоедениться.",
     attendeesLabel: "Сколько человек придёт?",
     attendingQuestion: "Сможещь быть с нами?",
     attendingYes: "Да, будем!",
     attendingNo: "К сожалению, не сможем",
     submitLabel: "Сохранить ответ",
     footerNote: "С любовью, Daniel & Iryna",
-    toastConfirmed: "Спасибо! Ты подтвердил участие. Мы очень ждём встречи!",
+    toastConfirmed: "Спасибо! Вы подтвердили участие. Мы очень ждём встречи!",
     toastDeclined: "Очень жаль, но мы всё равно вас любим!",
     toastGeneric: "Ответ сохранён.",
     toastError: "Не получилось сохранить ответ. Попробуй ещё раз.",
@@ -678,7 +678,7 @@ export default async function GuestInvitePage({
             <h2 className="font-serif text-3xl font-light text-zinc-900 sm:text-4xl">
               {copy.calendarTitle}
             </h2>
-            <p className="mt-4 text-base text-zinc-600">{copy.calendarIntro}</p>
+            {/* <p className="mt-4 text-base text-zinc-600">{copy.calendarIntro}</p> */}
             <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
               <a
                 href={googleCalendarUrl}
