@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 
 const TRACK_SRC =
-  "/Kiss - I Was Made For Lovin' You_(play.muzfan.net).mp3";
+  "/song.mp3";
 
 export function MusicToggle() {
   const audioRef = useRef<HTMLAudioElement | null>(null);

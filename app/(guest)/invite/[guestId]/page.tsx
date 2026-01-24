@@ -16,6 +16,7 @@ const VENUE_NAME_EN = "SAY EVENTS";
 const VENUE_NAME_HE = "סיי ארועים";
 const VENUE_ADDRESS = "Moshe Sharett St 19, Rishon LeZion";
 const VENUE_SITE_URL = "https://say-events.co.il/";
+const EVENT_DURATION_HOURS = 4;
 const heroScript = Great_Vibes({
   subsets: ["latin"],
   weight: "400",
@@ -28,12 +29,13 @@ const translations = {
       `${guestName}, с радостью приглашаем вас на важное событие - нашу свадьбу!`,
     heroDateLine: "30 марта 2026 • 19:30",
     heroScroll: "Листай вниз, чтобы узнать подробности",
-    introLineOne: "Мы будем счастливы разделить с вами",
-    introLineTwo: "вечер любви, радости",
-    introLineThree: "и начала новой главы.",
+    introLineOne:
+      "Дорогие родные и друзья!",
+    introLineTwo: "В нашей жизни скоро состоится важное и радостное для нас событие — наша свадьба.",
+    introLineThree: "Мы будем счастливы, если вы проведете вместе с нами этот особенный день!",
     introGuestLine: (guestName: string) =>
       `Будем рады видеть вас, ${guestName}, в этот важный день нашей жизни.`,
-    highlightsTitle: "Что тебя ждёт",
+    highlightsTitle: "Что вас ждёт",
     highlightsIntro:
       "Мы готовим день, полный эмоций. Праздник будет тёплым, атмосферным и очень личным.",
     scheduleHighlights: [
@@ -71,46 +73,57 @@ const translations = {
         text: "Если появятся вопросы — просто напиши нам в ответ на это приглашение.",
       },
     ],
-    countdownTitle: "До нашей свадьбы осталось",
+    countdownTitle: "До нашей свадьбы",
     countdownUnits: ["Дней", "Часов", "Минут", "Секунд"],
     countdownComplete: "Сегодня мы празднуем!",
-    timelineTitle: "Расписание вечера",
-    timelineIntro:
-      "Вот тайминг нашего праздника, чтобы ты точно знал, когда быть с нами.",
+    timelineTitle: "Программа вечера",
+    timelineIntro: "Будем рады видеть вас в эти моменты.",
     locationTitle: "Где проходит праздник",
-    locationIntro: "Мы будем очень ждать тебя в нашем зале. Ниже — адрес и карты.",
+    locationIntro: "Мы будем очень ждать вас в нашем зале. Ниже — адрес и карты.",
     locationAddressLabel: "Адрес",
     locationSiteLabel: "Сайт зала",
     locationOpenWaze: "Открыть в Waze",
     locationOpenGoogle: "Открыть в Google Maps",
     locationOpenApple: "Открыть в Apple Maps",
+    calendarTitle: "Добавить в календарь",
+    calendarIntro: "Сохрани дату, чтобы мы точно встретились.",
+    calendarGoogle: "Google Calendar",
+    calendarApple: "Apple Calendar",
+    dressCodeTitle: "Dress code",
+    dressCodeIntro:
+      "Будем рады, если вы отдадите предпочтение следующим оттенкам:",
+    dressCodeNote3: "",
+    dressCodeNote2:
+      "Просим не воспринимать это как строгий дресс-код, но пожалуйста по возможности воздержитесь от ярких цветов в нарядах.",
+    dressCodeNote1:
+      "Нам будет очень приятно, если вы поддержите эту цветовую палитру.",
     timelineSlots: [
       {
-        time: "18:30",
-        title: "Приветствие гостей",
-        description: "Коктейли, лёгкие закуски и первые объятия вечера.",
-      },
-      {
         time: "19:30",
-        title: "Хупа",
-        description: "Трогательная церемония под звёздами. Пожалуйста, не опаздывай!",
+        title: "Сбор гостей",
+        description: "Начинаем собираться, наслаждаться встречами и атмосферой.",
       },
       {
         time: "20:30",
-        title: "Праздничная вечеринка",
-        description: "Ужин, танцы и много радости до позднего вечера.",
+        title: "Торжественная церемония",
+        description: "Главный момент вечера. Пожалуйста, не опаздывайте!",
+      },
+      {
+        time: "21:15",
+        title: "Свадебный ужин",
+        description: "Время теплых тостов, угощений и общения.",
       },
     ],
     rsvpTitle: "Подтверди участие",
-    rsvpSubtitle: "Расскажи, сможешь ли ты прийти и сколько вас будет.",
+    rsvpSubtitle: "Расскажи, сможете ли ты прийти и сколько вас будет.",
     attendeesLabel: "Сколько человек придёт?",
-    attendingQuestion: "Сможешь быть с нами?",
-    attendingYes: "Да, я буду!",
-    attendingNo: "К сожалению, не смогу",
+    attendingQuestion: "Сможещь быть с нами?",
+    attendingYes: "Да, будем!",
+    attendingNo: "К сожалению, не сможем",
     submitLabel: "Сохранить ответ",
-    footerNote: "С любовью, Daniel & Irina",
+    footerNote: "С любовью, Daniel & Iryna",
     toastConfirmed: "Спасибо! Ты подтвердил участие. Мы очень ждём встречи!",
-    toastDeclined: "Очень жаль, но мы всё равно тебя любим!",
+    toastDeclined: "Очень жаль, но мы всё равно вас любим!",
     toastGeneric: "Ответ сохранён.",
     toastError: "Не получилось сохранить ответ. Попробуй ещё раз.",
   },
@@ -120,9 +133,10 @@ const translations = {
       `${guestName}, נשמח לחגוג איתך את האהבה שלנו.`,
     heroDateLine: "30.03.2026 • 19:30",
     heroScroll: "גלול מטה לכל המידע",
-    introLineOne: "נשמח לחלוק איתכם",
-    introLineTwo: "ערב של אהבה ושמחה",
-    introLineThree: "ותחילתה של פרק חדש.",
+    introLineOne:
+      "משפחה וחברים יקרים!",
+    introLineTwo: "בקרוב יתקיים בחיינו אירוע חשוב ומשמח — החתונה שלנו.",
+    introLineThree: " נשמח מאוד אם תבלו איתנו את היום המיוחד הזה!",
     introGuestLine: (guestName: string) =>
       `נשמח לראות אותך, ${guestName}, ביום החשוב הזה בחיינו.`,
     highlightsTitle: "מה מחכה לך",
@@ -165,8 +179,8 @@ const translations = {
     countdownTitle: "מתרגשים לראות אותך בעוד",
     countdownUnits: ["ימים", "שעות", "דקות", "שניות"],
     countdownComplete: "היום זה קורה!",
-    timelineTitle: "לוח זמנים לערב שלנו",
-    timelineIntro: "כך ייראה הערב — כדי שתדע/י בדיוק מתי להיות איתנו.",
+    timelineTitle: "תוכנית הערב",
+    timelineIntro: "נשמח לראות אותך ברגעים האלה.",
     locationTitle: "איפה חוגגים",
     locationIntro: "נשמח לראות אותך באולם שלנו. כאן כל הפרטים והקישורים.",
     locationAddressLabel: "כתובת",
@@ -174,21 +188,32 @@ const translations = {
     locationOpenWaze: "פתיחה ב-Waze",
     locationOpenGoogle: "פתיחה ב-Google Maps",
     locationOpenApple: "פתיחה ב-Apple Maps",
+    calendarTitle: "הוספה ליומן",
+    calendarIntro: "שמור/י את התאריך כדי לא לפספס.",
+    calendarGoogle: "Google Calendar",
+    calendarApple: "Apple Calendar",
+    dressCodeTitle: "Dress code",
+    dressCodeIntro: "נשמח אם תבחרו בגוונים הבאים:",
+    dressCodeNote3: "",
+dressCodeNote2:
+  "אנא אל תראו בכך קוד לבוש מחייב, אך נבקש במידת האפשר להימנע מצבעים עזים בלבוש.",
+dressCodeNote1:
+  "נשמח מאוד אם תבחרו לתמוך בפלטת הצבעים הזו.",
     timelineSlots: [
       {
-        time: "18:30",
-        title: "קבלת פנים",
-        description: "מגיעים, מחייכים ופותחים את הערב במשהו טעים.",
-      },
-      {
         time: "19:30",
-        title: "חופה",
-        description: "הרגע הכי מרגש שלנו בחתונה — נשמח שתהיה/י שם לצידנו.",
+        title: "התכנסות",
+        description: "מתחילים להתאסף, להיפגש וליהנות מהאווירה.",
       },
       {
         time: "20:30",
-        title: "מסיבה",
-        description: "מתחילים לחגוג, רוקדים ואוכלים יחד עד מאוחר.",
+        title: "טקס",
+        description: "הרגע המרכזי של הערב. נשמח שתהיה/י שם לצידנו.",
+      },
+      {
+        time: "21:15",
+        title: "ארוחת ערב חגיגית",
+        description: "זמן לטוסטים חמים, אוכל טוב ושיחה.",
       },
     ],
     rsvpTitle: "אשר/י הגעה",
@@ -230,6 +255,10 @@ const translations = {
     countdownTitle: string;
     countdownUnits: [string, string, string, string];
     countdownComplete: string;
+    calendarTitle: string;
+    calendarIntro: string;
+    calendarGoogle: string;
+    calendarApple: string;
     timelineTitle: string;
     timelineIntro: string;
     locationTitle: string;
@@ -244,6 +273,11 @@ const translations = {
       title: string;
       description: string;
     }>;
+    dressCodeTitle: string;
+    dressCodeIntro: string;
+    dressCodeNote1: string;
+    dressCodeNote2: string;
+    dressCodeNote3: string;
     rsvpTitle: string;
     rsvpSubtitle: string;
     attendeesLabel: string;
@@ -272,6 +306,10 @@ function calculateInitialCountdown(targetIso: string): [number, number, number, 
   const seconds = totalSeconds % 60;
 
   return [days, hours, minutes, seconds];
+}
+
+function formatGoogleCalendarDate(date: Date): string {
+  return date.toISOString().replace(/[-:]/g, "").replace(".000", "");
 }
 
 export const dynamic = "force-dynamic";
@@ -378,24 +416,32 @@ export default async function GuestInvitePage({
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${locationQuery}`;
   const appleMapsUrl = `https://maps.apple.com/?q=${locationQuery}`;
   const venueDisplay = guest.language === "he" ? VENUE_NAME_HE : VENUE_NAME_EN;
+  const eventStart = new Date(WEDDING_DATE_ISO);
+  const eventEnd = new Date(eventStart.getTime() + EVENT_DURATION_HOURS * 60 * 60 * 1000);
+  const calendarTitle = encodeURIComponent(`${COUPLE_NAMES} Wedding`);
+  const calendarDetails = encodeURIComponent(`Wedding celebration at ${venueDisplay}.`);
+  const calendarLocation = encodeURIComponent(VENUE_ADDRESS);
+  const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${calendarTitle}&details=${calendarDetails}&location=${calendarLocation}&dates=${formatGoogleCalendarDate(
+    eventStart,
+  )}/${formatGoogleCalendarDate(eventEnd)}`;
 
   return (
     <div
       className="bg-zinc-50 text-zinc-950"
       dir={direction}
+      lang={guest.language}
     >
       <InviteToaster />
       <header className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden text-zinc-50">
         <Image
-          src="/hero.jpg"
+          src="/hero.jpeg"
           alt="Wedding invitation background"
           fill
           priority
-          className="object-cover"
+          className=""
         />
-        <div className="absolute inset-0 bg-zinc-900/65 backdrop-blur-[2px]" />
         <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-5 px-6 text-center">
-          <div
+          {/* <div
             className={`${heroScript.className} text-7xl leading-tight text-zinc-100 sm:text-8xl`}
           >
             <span className="block">Daniel</span>
@@ -407,7 +453,7 @@ export default async function GuestInvitePage({
           </p>
           <p className={`${heroScript.className} text-4xl text-zinc-100 sm:text-5xl`}>
             Wedding Day
-          </p>
+          </p> */}
           <MusicToggle />
         </div>
         <div className="absolute bottom-8 left-0 right-0 flex justify-center">
@@ -419,14 +465,14 @@ export default async function GuestInvitePage({
 
       <main>
         <section className="mx-auto max-w-3xl px-6 py-14 text-center sm:py-18">
-          <div className={`space-y-3 text-lg text-zinc-700 ${alignment}`}>
-            <p>{copy.introLineOne}</p>
-            <p>{copy.introLineTwo}</p>
-            <p>{copy.introLineThree}</p>
-          </div>
-          <p className={`mt-6 text-base text-zinc-600 ${alignment}`}>
+            <div className="space-y-3 text-center text-lg text-zinc-700">
+              <p>{copy.introLineOne}</p>
+              <p>{copy.introLineTwo}</p>
+              <p>{copy.introLineThree}</p>
+            </div>
+          {/* <p className={`mt-6 text-base text-zinc-600 ${alignment}`}>
             {copy.introGuestLine(guest.firstName)}
-          </p>
+          </p> */}
         </section>
 
         <section className="mx-auto max-w-4xl px-6 py-16 text-center sm:py-20">
@@ -442,39 +488,6 @@ export default async function GuestInvitePage({
           />
         </section>
 
-        <section className="mx-auto max-w-5xl px-6 py-20 sm:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-serif text-3xl font-light tracking-wide text-zinc-900 sm:text-4xl">
-              {copy.highlightsTitle}
-            </h2>
-            <p className="mt-4 text-base text-zinc-600">{copy.highlightsIntro}</p>
-          </div>
-          <div className="mt-12 grid gap-8 sm:grid-cols-2">
-            {copy.scheduleHighlights.map((item) => (
-              <article
-                key={item.title}
-                className="rounded-3xl bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-4xl">{item.icon}</span>
-                  <span className="text-xs font-medium uppercase tracking-[0.3em] text-zinc-400">
-                    {item.time}
-                  </span>
-                </div>
-                <h3 className="mt-6 text-xl font-semibold text-zinc-900">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-sm font-medium text-zinc-500">
-                  {item.location}
-                </p>
-                <p className="mt-4 text-sm leading-6 text-zinc-600">
-                  {item.description}
-                </p>
-              </article>
-            ))}
-          </div>
-        </section>
-
         <section className="border-t border-zinc-200 bg-white">
           <div className="mx-auto max-w-5xl px-6 py-20 sm:py-24">
             <div className="mx-auto max-w-3xl text-center">
@@ -485,7 +498,16 @@ export default async function GuestInvitePage({
                 {copy.locationIntro}
               </p>
             </div>
-            <div className="mt-12 rounded-3xl border border-zinc-200 bg-zinc-50 p-8 shadow-sm">
+            <div className="mt-12 overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-50 shadow-sm">
+              <div className="relative h-48 w-full sm:h-64">
+                <Image
+                  src="/location.png"
+                  alt="Wedding venue"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="p-8">
               <div className={`text-center ${alignment}`}>
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-zinc-400">
                   {copy.locationAddressLabel}
@@ -561,9 +583,11 @@ export default async function GuestInvitePage({
                   />
                 </div>
               </div>
+              </div>
             </div>
           </div>
         </section>
+
 
         <section className="border-t border-zinc-200 bg-white">
           <div className="mx-auto max-w-5xl px-6 py-20 sm:py-24">
@@ -575,25 +599,24 @@ export default async function GuestInvitePage({
                 {copy.timelineIntro}
               </p>
             </div>
-            <div className="mt-12 space-y-6">
-              {copy.timelineSlots.map((slot) => (
+            <div className="mx-auto mt-12 max-w-md">
+              {copy.timelineSlots.map((slot, index) => (
                 <div
                   key={`${slot.time}-${slot.title}`}
-                  className="flex flex-col gap-4 rounded-3xl border border-zinc-200 bg-zinc-50 px-6 py-5 shadow-sm transition hover:border-zinc-300 sm:flex-row sm:items-center sm:justify-between"
+                  className="relative flex flex-col items-center px-4 py-6 text-center"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-900 text-lg font-semibold text-white shadow">
-                      {slot.time}
-                    </div>
-                    <div className={`text-left ${alignment}`}>
-                      <h3 className="text-lg font-semibold text-zinc-900">
-                        {slot.title}
-                      </h3>
-                      <p className="mt-1 text-sm text-zinc-600">
-                        {slot.description}
-                      </p>
-                    </div>
+                  <div className="text-2xl font-light tracking-[0.2em] text-zinc-800 sm:text-3xl">
+                    {slot.time}
                   </div>
+                  <div className="mt-2 text-center text-base font-medium text-zinc-700">
+                    {slot.title}
+                  </div>
+                  <p className="mt-2 text-center text-sm text-zinc-500">
+                    {slot.description}
+                  </p>
+                  {index < copy.timelineSlots.length - 1 && (
+                    <span className="mt-4 h-8 w-px self-center bg-zinc-300/80" />
+                  )}
                 </div>
               ))}
             </div>
@@ -601,29 +624,21 @@ export default async function GuestInvitePage({
         </section>
 
         <section className="border-t border-zinc-200 bg-white">
-          <div className="mx-auto max-w-5xl px-6 py-20 sm:py-24">
-            <div className="mx-auto max-w-3xl text-center">
-              <h2 className="font-serif text-3xl font-light text-zinc-900 sm:text-4xl">
-                {copy.infoTitle}
-              </h2>
-              <p className="mt-4 text-base text-zinc-600">
-                {copy.infoIntro}
-              </p>
+          <div className="mx-auto max-w-4xl px-6 py-16 text-center sm:py-20">
+            <h2 className={`${heroScript.className} text-4xl text-zinc-900 sm:text-5xl`}>
+              {copy.dressCodeTitle}
+            </h2>
+            <p className="mt-4 text-base text-zinc-600">{copy.dressCodeIntro}</p>
+            <div className="mt-8 grid grid-cols-4 gap-2">
+              <div className="h-28 bg-[#1b1b1f]" />
+              <div className="h-28 bg-[#5a463c]" />
+              <div className="h-28 bg-[#efe5db]" />
+              <div className="h-28 bg-[#4b2f25]" />
             </div>
-            <div className="mt-12 grid gap-6 sm:grid-cols-3">
-              {copy.infoItems.map((item) => (
-                <article
-                  key={item.title}
-                  className="rounded-3xl border border-zinc-200 bg-zinc-50 p-6 shadow-sm"
-                >
-                  <h3 className={`text-lg font-semibold text-zinc-900 ${alignment}`}>
-                    {item.title}
-                  </h3>
-                  <p className={`mt-3 text-sm text-zinc-600 leading-6 ${alignment}`}>
-                    {item.text}
-                  </p>
-                </article>
-              ))}
+            <div className={`mt-6 space-y-2 text-sm text-zinc-600 ${alignment}`}>
+              <p>{copy.dressCodeNote1}</p>
+              <p>{copy.dressCodeNote2}</p>
+              <p>{copy.dressCodeNote3}</p>
             </div>
           </div>
         </section>
@@ -631,9 +646,9 @@ export default async function GuestInvitePage({
         <section className="border-t border-zinc-200 bg-gradient-to-b from-white to-zinc-100">
           <div className="mx-auto max-w-3xl px-6 py-20 sm:py-24">
             <div className={`space-y-4 text-center ${alignment === "text-right" ? "sm:text-right" : "sm:text-left"}`}>
-              <h2 className="font-serif text-3xl font-light text-zinc-900 sm:text-4xl">
+              {/* <h2 className="font-serif text-3xl font-light text-zinc-900 sm:text-4xl">
                 {copy.rsvpTitle}
-              </h2>
+              </h2> */}
               <p className="text-sm text-zinc-600">{copy.rsvpSubtitle}</p>
             </div>
             <RsvpForm
@@ -655,6 +670,31 @@ export default async function GuestInvitePage({
                 toastError: copy.toastError,
               }}
             />
+          </div>
+        </section>
+
+        <section className="border-t border-zinc-200 bg-zinc-50">
+          <div className="mx-auto max-w-4xl px-6 py-16 text-center sm:py-20">
+            <h2 className="font-serif text-3xl font-light text-zinc-900 sm:text-4xl">
+              {copy.calendarTitle}
+            </h2>
+            <p className="mt-4 text-base text-zinc-600">{copy.calendarIntro}</p>
+            <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+              <a
+                href={googleCalendarUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center rounded-full border border-zinc-300 bg-white px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-900"
+              >
+                {copy.calendarGoogle}
+              </a>
+              <a
+                href="/wedding.ics"
+                className="inline-flex items-center justify-center rounded-full border border-zinc-300 bg-white px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-900"
+              >
+                {copy.calendarApple}
+              </a>
+            </div>
           </div>
         </section>
       </main>

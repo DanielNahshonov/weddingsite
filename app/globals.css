@@ -25,6 +25,10 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
+[lang="he"] {
+  font-family: "Varela Round", var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
 @keyframes animate-bounce-in {
   0% {
     opacity: 0;

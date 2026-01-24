@@ -64,25 +64,36 @@ export function CountdownTimer({
     value.toLocaleString(undefined, { minimumIntegerDigits: 2 }),
   );
 
+  const orderedValues = direction === "rtl" ? [...formatted].reverse() : formatted;
+  const orderedLabels = direction === "rtl" ? [...labels].reverse() : labels;
+
   return (
     <div className="mt-10 space-y-6">
       <div
-        className="mx-auto flex w-full max-w-3xl flex-wrap justify-center gap-4"
+        className="mx-auto w-full max-w-3xl text-center"
         dir={direction}
       >
-        {formatted.map((value, index) => (
-          <div
-            key={labels[index]}
-            className="flex min-w-[120px] flex-1 basis-40 flex-col items-center rounded-3xl bg-white/80 px-4 py-5 text-center shadow-sm backdrop-blur transition hover:shadow-md"
-          >
-            <span className="text-3xl font-semibold tracking-wide text-zinc-900">
-              {value}
-            </span>
-            <span className="mt-2 text-xs font-medium uppercase tracking-[0.3em] text-zinc-500">
-              {labels[index]}
-            </span>
-          </div>
-        ))}
+        <div
+          className="grid gap-2 text-center sm:gap-4"
+          style={{ gridTemplateColumns: "repeat(4, minmax(0, 1fr))" }}
+        >
+          {orderedValues.map((value, index) => (
+            <div
+              key={orderedLabels[index]}
+              className="flex min-w-0 flex-col items-center"
+            >
+              <div className="whitespace-nowrap text-[26px] font-light tracking-[0.1em] text-zinc-800 sm:text-4xl">
+                {value}
+                {index < orderedValues.length - 1 && (
+                  <span className="mx-0.5 text-zinc-400">:</span>
+                )}
+              </div>
+              <div className="mt-2 text-[9px] uppercase tracking-[0.22em] text-zinc-500 sm:text-xs">
+                {orderedLabels[index]}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
       {isComplete && (
         <p className="text-sm font-medium uppercase tracking-[0.3em] text-zinc-500">
